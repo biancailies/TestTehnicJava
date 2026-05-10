@@ -7,6 +7,7 @@ import Service.BookingService;
 import Service.EmailService;
 import Service.SearchService;
 import Controller.AppController;
+import Service.RouteOptimizerService;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,8 +24,15 @@ public class Main {
         BookingService bookingService = new BookingService(bookingRepository, trainRepository, emailService);
         SearchService searchService = new SearchService(trainRepository);
 
-        // Initialize and run Controller
-        AppController appController = new AppController(adminService, bookingService, searchService);
+        // Route optimizer
+        RouteOptimizerService routeOptimizerService = new RouteOptimizerService(trainRepository);
+        AppController appController = new AppController(
+                adminService,
+                bookingService,
+                searchService,
+                routeOptimizerService
+        );
+
         appController.runDemo();
     }
 }

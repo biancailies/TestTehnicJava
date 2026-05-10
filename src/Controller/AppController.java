@@ -7,6 +7,7 @@ import Model.Station;
 import Model.Train;
 import Service.AdminService;
 import Service.BookingService;
+import Service.RouteOptimizerService;
 import Service.SearchService;
 
 import java.time.LocalTime;
@@ -21,11 +22,16 @@ public class AppController {
     private final AdminService adminService;
     private final BookingService bookingService;
     private final SearchService searchService;
+    private final RouteOptimizerService routeOptimizerService;
 
-    public AppController(AdminService adminService, BookingService bookingService, SearchService searchService) {
+    public AppController(AdminService adminService,
+                         BookingService bookingService,
+                         SearchService searchService,
+                         RouteOptimizerService routeOptimizerService) {
         this.adminService = adminService;
         this.bookingService = bookingService;
         this.searchService = searchService;
+        this.routeOptimizerService = routeOptimizerService;
     }
 
     public void runDemo() {
@@ -144,5 +150,19 @@ public class AppController {
         System.out.print(adminService.delayTrain(t2, 15));
         System.out.println();
         System.out.print(adminService.delayTrain(t1, 10));
+
+        System.out.println();
+        System.out.println("=== [SECTION 8] Optional Problem 2: Smart Route Optimizer ===");
+
+        System.out.print(routeOptimizerService.showAllRouteOptions(s1, s5));
+        System.out.println();
+
+        System.out.print(routeOptimizerService.findFastestRoute(s1, s5));
+        System.out.println();
+
+        System.out.print(routeOptimizerService.findCheapestRoute(s1, s5));
+        System.out.println();
+
+        System.out.print(routeOptimizerService.findFastestRoute(s5, s1));
     }
 }
