@@ -10,9 +10,9 @@ The application follows an MVC-like, layered architecture to separate concerns w
 
 | Layer | Package | Responsibility |
 |---|---|---|
-| **Models** | `Model` | Domain entities: `Train`, `Route`, `Station`, `Booking`, `Ticket`, `Customer` |
+| **Models** | `Model` | Domain entities: `Train`, `Route`, `Station`, `Booking`, `Ticket`, `Customer`, `RouteOption` |
 | **Repositories** | `Model.Repository` | In-memory CRUD stores for each entity |
-| **Services** | `Service` | Core business logic |
+| **Services** | `Service` | Core business logic and route optimization |
 | **Controllers** | `Controller` | Manages the application flow (`AppController`) |
 | **Entry Point** | `Main.java` | Wires dependencies and runs the controller |
 
@@ -22,6 +22,7 @@ The application follows an MVC-like, layered architecture to separate concerns w
 - **Type-safe Timings:** Uses `java.time.LocalTime` and `java.time.LocalDateTime` instead of generic strings.
 - **Email Simulation (Important):** As requested by the assignment, "a confirmation mail should be sent". Since this is a standalone Java SE app with no SMTP configured, the `EmailService` *simulates* delivery by printing realistic email bodies to `System.out`. 
 - **Admin Audit Trail:** All admin operations print a clear `[ADMIN] operation: SUCCESS / FAILED` message for traceability.
+- **Smart Route Optimization:** The optional solution introduces a route optimization engine capable of comparing multiple travel options based on duration, number of changes, and estimated ticket price.
 
 ---
 
@@ -201,3 +202,84 @@ We apologize for the inconvenience.
 [ADMIN] Train 'IR 1001' is now delayed by 10 minute(s). Notifying customers...
 [ADMIN] No customers to notify.
 ```
+
+---
+
+### Section 8 — Optional Problem 2: Smart Route Optimizer
+
+### Problem Definition
+
+A common problem in railway systems is selecting the “best” route between two stations when multiple travel options exist.
+
+Different customers may prefer:
+- the fastest route,
+- the cheapest route,
+- or the route with the fewest train changes.
+
+The standard route search implemented in Problem 1 only determines whether a valid connection exists.  
+The optional extension introduces a **Smart Route Optimizer** capable of evaluating and ranking all possible travel options.
+
+---
+
+### Implemented Solution
+
+The application introduces:
+- a new `RouteOption` model,
+- and a dedicated `RouteOptimizerService`.
+
+The optimizer:
+- searches all direct and one-change routes,
+- computes:
+   - total duration,
+   - estimated ticket price,
+   - number of train changes,
+- and selects the optimal route depending on the optimization criteria.
+
+The optimizer supports:
+1. Fastest route
+2. Cheapest route
+3. Listing all possible route options
+
+---
+
+### Optimization Criteria
+
+#### Fastest Route
+Routes are sorted by:
+1. total duration,
+2. number of changes,
+3. total price.
+
+#### Cheapest Route
+Routes are sorted by:
+1. total estimated price,
+2. total duration,
+3. number of changes.
+
+---
+
+### Example Output
+
+```text
+=== [SECTION 8] Optional Problem 2: Smart Route Optimizer ===
+
+[OPTIMIZER] All route options from Bucuresti Nord to Cluj:
+
+Option 1:
+Stations: Bucuresti Nord -> Brasov -> Cluj
+Trains: IR 1001 + IR 1002
+Departure: 08:00
+Arrival: 15:30
+Total duration: 7h 30m
+Changes: 1
+Estimated price: $80.0
+
+[OPTIMIZER] Optimization criteria: FASTEST
+Best route found:
+Stations: Bucuresti Nord -> Brasov -> Cluj
+Trains: IR 1001 + IR 1002
+Departure: 08:00
+Arrival: 15:30
+Total duration: 7h 30m
+Changes: 1
+Estimated price: $80.0
