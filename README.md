@@ -1,6 +1,6 @@
 # Java Train Ticketing Application
 
-This project is a console-based Java application for managing a train ticketing system. It supports booking tickets, route searching, and a full suite of admin operations, all without external dependencies — pure Java SE.
+This project is a console-based Java application for managing a train ticketing system. It supports booking tickets, route searching, and a full suite of admin operations, using Java SE and Maven for build and test automation.
 
 ---
 
@@ -35,13 +35,20 @@ The application starts with an interactive console menu. At startup, predefined 
 Navigate to the `src` directory and compile all source files:
 
 ```bash
-javac Main.java Controller/*.java Service/*.java Model/*.java Model/Repository/*.java
+  mvn compile
 ```
 
-Then run:
+### Run the application
 
 ```bash
-java Main
+  mvn compile
+  java -cp target/classes Main
+```
+
+### Run automated tests
+
+```bash
+  mvn test
 ```
 
 ### Main menu
@@ -56,20 +63,30 @@ java Main
 ### Customer operations
 
 ```text
-1. Search routes
-2. Book tickets
-3. Show optimized routes
+1. Show all trains
+2. Search route
+3. Book tickets
+4. Smart route optimizer
 0. Back
 ```
 
 ### Administrator operations
 
 ```text
-1. Station management
-2. Route management
-3. Train management
-4. View bookings for a train
-5. Report train delay
+1. Show stations
+2. Add station
+3. Show routes
+4. Add route
+5. Update route name
+6. Remove route
+7. Show trains
+8. Add train
+9. Update train
+10. Remove train
+11. Show bookings for train
+12. Report train delay
+13. Add station to route
+14. Remove station from route
 0. Back
 ```
 ---
@@ -320,9 +337,6 @@ Estimated price: $80.0
 ```
 
 ## Automated Tests
-```bash
-mvn test
-```
 
 The project includes JUnit 5 tests for the main business logic:
 

@@ -159,6 +159,8 @@ public class AppController {
             System.out.println("10. Remove train");
             System.out.println("11. Show bookings for train");
             System.out.println("12. Report train delay");
+            System.out.println("13. Add station to route");
+            System.out.println("14. Remove station from route");
             System.out.println("0. Back");
             System.out.print("Choose option: ");
 
@@ -177,6 +179,8 @@ public class AppController {
                 case 10 -> removeTrain();
                 case 11 -> showBookingsForTrain();
                 case 12 -> reportDelay();
+                case 13 -> addStationToRoute();
+                case 14 -> removeStationFromRoute();
                 case 0 -> back = true;
                 default -> System.out.println("Invalid option.");
             }
@@ -473,6 +477,50 @@ public class AppController {
                             + " -> " + ticket.getArrivalStation().getName())
             );
         }
+    }
+
+    private void addStationToRoute() {
+        System.out.print("Enter route ID: ");
+        int routeId = readInt();
+
+        Route route = adminService.findRouteById(routeId);
+        if (route == null) {
+            System.out.println("[ADMIN] Route not found.");
+            return;
+        }
+
+        System.out.print("Enter station ID: ");
+        int stationId = readInt();
+
+        Station station = adminService.findStationById(stationId);
+        if (station == null) {
+            System.out.println("[ADMIN] Station not found.");
+            return;
+        }
+
+        System.out.println(adminService.addStationToRoute(route, station));
+    }
+
+    private void removeStationFromRoute() {
+        System.out.print("Enter route ID: ");
+        int routeId = readInt();
+
+        Route route = adminService.findRouteById(routeId);
+        if (route == null) {
+            System.out.println("[ADMIN] Route not found.");
+            return;
+        }
+
+        System.out.print("Enter station ID: ");
+        int stationId = readInt();
+
+        Station station = adminService.findStationById(stationId);
+        if (station == null) {
+            System.out.println("[ADMIN] Station not found.");
+            return;
+        }
+
+        System.out.println(adminService.removeStationFromRoute(route, station));
     }
 
     private void reportDelay() {
