@@ -36,12 +36,12 @@ public class BookingService {
             return "Error: Invalid ticket price.\n";
         }
 
-        if (train.getRoute() == null || train.getStationTimes() == null) {
-            return "Error: Train route or schedule is invalid.\n";
-        }
-
         if (train == null || count <= 0 || customer == null) {
             return "Error: Invalid parameters for booking.\n";
+        }
+
+        if (train.getRoute() == null || train.getStationTimes() == null) {
+            return "Error: Train route or schedule is invalid.\n";
         }
 
         // Strict Validations
