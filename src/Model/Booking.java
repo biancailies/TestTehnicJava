@@ -1,19 +1,20 @@
 package Model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Booking {
     private int id;
     private Customer customer;
-    private Ticket ticket;
+    private List<Ticket> tickets;
     private LocalDateTime bookingDate;
 
     public Booking() {}
 
-    public Booking(int id, Customer customer, Ticket ticket, LocalDateTime bookingDate) {
+    public Booking(int id, Customer customer, List<Ticket> tickets, LocalDateTime bookingDate) {
         this.id = id;
         this.customer = customer;
-        this.ticket = ticket;
+        this.tickets = tickets;
         this.bookingDate = bookingDate;
     }
 
@@ -25,8 +26,8 @@ public class Booking {
         return customer;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 
     public LocalDateTime getBookingDate() {
@@ -41,8 +42,8 @@ public class Booking {
         this.customer = customer;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     public void setBookingDate(LocalDateTime bookingDate) {

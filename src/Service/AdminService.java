@@ -31,86 +31,73 @@ public class AdminService {
 
     // --- Station Management ---
 
-    public boolean addStation(Station station) {
+    public String addStation(Station station) {
         boolean result = stationRepository.addStation(station);
-        System.out.println("[ADMIN] addStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)"));
-        return result;
+        return "[ADMIN] addStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
-    public boolean removeStation(int id) {
+    public String removeStation(int id) {
         boolean result = stationRepository.removeStation(id);
-        System.out.println("[ADMIN] removeStation(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] removeStation(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
-    public boolean updateStation(Station station) {
+    public String updateStation(Station station) {
         boolean result = stationRepository.updateStation(station);
-        System.out.println("[ADMIN] updateStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] updateStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
     // --- Route Management ---
 
-    public boolean addRoute(Route route) {
+    public String addRoute(Route route) {
         boolean result = routeRepository.addRoute(route);
-        System.out.println("[ADMIN] addRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)"));
-        return result;
+        return "[ADMIN] addRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
-    public boolean removeRoute(int id) {
+    public String removeRoute(int id) {
         boolean result = routeRepository.removeRoute(id);
-        System.out.println("[ADMIN] removeRoute(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] removeRoute(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
-    public boolean updateRoute(Route route) {
+    public String updateRoute(Route route) {
         boolean result = routeRepository.updateRoute(route);
-        System.out.println("[ADMIN] updateRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] updateRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
-    public boolean addStationToRoute(Route route, Station station) {
-        if (route == null || station == null) return false;
+    public String addStationToRoute(Route route, Station station) {
+        if (route == null || station == null) return "[ADMIN] addStationToRoute: FAILED (null parameters)";
         if (route.getStations().stream().anyMatch(s -> s.getId() == station.getId())) {
-            System.out.println("[ADMIN] addStationToRoute: Station '" + station.getName() + "' already exists in route '" + route.getName() + "'.");
-            return false;
+            return "[ADMIN] addStationToRoute: Station '" + station.getName() + "' already exists in route '" + route.getName() + "'.";
         }
         route.getStations().add(station);
         boolean result = routeRepository.updateRoute(route);
-        System.out.println("[ADMIN] addStationToRoute('" + station.getName() + "' -> '" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED"));
-        return result;
+        return "[ADMIN] addStationToRoute('" + station.getName() + "' -> '" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED");
     }
 
-    public boolean removeStationFromRoute(Route route, Station station) {
-        if (route == null || station == null) return false;
+    public String removeStationFromRoute(Route route, Station station) {
+        if (route == null || station == null) return "[ADMIN] removeStationFromRoute: FAILED (null parameters)";
         boolean removed = route.getStations().removeIf(s -> s.getId() == station.getId());
         if (!removed) {
-            System.out.println("[ADMIN] removeStationFromRoute: Station '" + station.getName() + "' not found in route '" + route.getName() + "'.");
-            return false;
+            return "[ADMIN] removeStationFromRoute: Station '" + station.getName() + "' not found in route '" + route.getName() + "'.";
         }
         boolean result = routeRepository.updateRoute(route);
-        System.out.println("[ADMIN] removeStationFromRoute('" + station.getName() + "' from '" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED"));
-        return result;
+        return "[ADMIN] removeStationFromRoute('" + station.getName() + "' from '" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED");
     }
 
     // --- Train Management ---
 
-    public boolean addTrain(Train train) {
+    public String addTrain(Train train) {
         boolean result = trainRepository.addTrain(train);
-        System.out.println("[ADMIN] addTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)"));
-        return result;
+        return "[ADMIN] addTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
-    public boolean removeTrain(int id) {
+    public String removeTrain(int id) {
         boolean result = trainRepository.removeTrain(id);
-        System.out.println("[ADMIN] removeTrain(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] removeTrain(id=" + id + "): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
-    public boolean updateTrain(Train train) {
+    public String updateTrain(Train train) {
         boolean result = trainRepository.updateTrain(train);
-        System.out.println("[ADMIN] updateTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)"));
-        return result;
+        return "[ADMIN] updateTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
     }
 
     // --- Booking & Delays ---
@@ -119,20 +106,24 @@ public class AdminService {
         return bookingRepository.getBookingsForTrain(train);
     }
 
-    public void delayTrain(Train train, int delayMinutes) {
-        if (train == null) return;
+    public String delayTrain(Train train, int delayMinutes) {
+        if (train == null) return "[ADMIN] delayTrain: FAILED (train is null)";
 
         train.setDelayMinutes(train.getDelayMinutes() + delayMinutes);
         trainRepository.updateTrain(train);
-        System.out.println("[ADMIN] Train '" + train.getName() + "' is now delayed by " + train.getDelayMinutes() + " minute(s). Notifying customers...");
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ADMIN] Train '").append(train.getName()).append("' is now delayed by ").append(train.getDelayMinutes()).append(" minute(s). Notifying customers...\n");
 
         List<Booking> affectedBookings = bookingRepository.getBookingsForTrain(train);
         if (affectedBookings.isEmpty()) {
-            System.out.println("[ADMIN] No customers to notify.");
+            sb.append("[ADMIN] No customers to notify.\n");
         }
         for (Booking booking : affectedBookings) {
-            emailService.sendDelayNotification(booking.getCustomer().getEmail(), booking.getCustomer().getName(), train, train.getDelayMinutes());
+            String emailStr = emailService.sendDelayNotification(booking.getCustomer().getEmail(), booking.getCustomer().getName(), train, train.getDelayMinutes());
+            sb.append(emailStr);
         }
+        return sb.toString();
     }
 }
 

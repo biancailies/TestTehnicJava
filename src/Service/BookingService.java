@@ -26,33 +26,40 @@ public class BookingService {
         this.emailService = emailService;
     }
 
-    public boolean bookTickets(Train train, Station departure, Station arrival, int count, 
+    public String bookTickets(Train train, Station departure, Station arrival, int count, 
                                Customer customer, Double pricePerTicket) {
-        if (train == null || count <= 0 || customer == null) return false;
-
-        if (train.getTotalSeats() - train.getBookedSeats() < count) {
-            System.out.println("Error: Overbooking prevented. Train " + train.getName() + " does not have enough seats.");
-            return false;
+        if (train == null || count <= 0 || customer == null) {
+            return "Error: Invalid parameters for booking.\n";
         }
 
-        List<Booking> currentBookings = new ArrayList<>();
+        // Strict Validations
+        if (!train.getStationTimes().containsKey(departure) || !train.getStationTimes().containsKey(arrival)) {
+            return "Error: Departure or Arrival station is not on the train's route.\n";
+        }
+        
+        java.time.LocalTime depTime = train.getStationTimes().get(departure);
+        java.time.LocalTime arrTime = train.getStationTimes().get(arrival);
+        
+        if (!depTime.isBefore(arrTime)) {
+            return "Error: Invalid route direction. Departure must be before arrival.\n";
+        }
+
+        if (train.getTotalSeats() - train.getBookedSeats() < count) {
+            return "Error: Overbooking prevented. Train " + train.getName() + " does not have enough seats.\n";
+        }
+
+        List<Ticket> tickets = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             int seatNumber = train.getBookedSeats() + 1;
             train.setBookedSeats(seatNumber);
-            
             Ticket ticket = new Ticket(nextTicketId++, train, departure, arrival, seatNumber, pricePerTicket);
-            Booking booking = new Booking(nextBookingId++, customer, ticket, LocalDateTime.now());
-            
-            bookingRepository.addBooking(booking);
-            currentBookings.add(booking);
+            tickets.add(ticket);
         }
 
+        Booking booking = new Booking(nextBookingId++, customer, tickets, LocalDateTime.now());
+        bookingRepository.addBooking(booking);
         trainRepository.updateTrain(train);
 
-        for (Booking booking : currentBookings) {
-            emailService.sendBookingConfirmation(booking);
-        }
-
-        return true;
+        return emailService.sendBookingConfirmation(booking);
     }
 }

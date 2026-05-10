@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RouteRepository {
 
-    private List<Route> routeList = new ArrayList<Route>();
+    private List<Route> routeList = new ArrayList<>();
 
     public boolean addRoute(Route route){
         if(route == null)
@@ -23,29 +23,17 @@ public class RouteRepository {
 
     }
 
-    public boolean removeRoute(int id){
-        for(Route r : routeList) {
-            if (r.getId() == id){
-                routeList.remove(r);
-                return true;
-            }
-        }
-        return false;
+    public boolean removeRoute(int id) {
+        return routeList.removeIf(r -> r.getId() == id);
     }
 
-    public boolean updateRoute(Route route){
-        if(route == null)
-            return false;
-
-        for(Route r : routeList) {
-            if (r.getId() == route.getId()){
-                routeList.remove(r);
-                routeList.add(route);
-
-                return true;
-            }
+    public boolean updateRoute(Route route) {
+        if (route == null) return false;
+        boolean removed = routeList.removeIf(r -> r.getId() == route.getId());
+        if (removed) {
+            routeList.add(route);
+            return true;
         }
-
         return false;
     }
 

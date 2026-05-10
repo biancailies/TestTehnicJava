@@ -23,25 +23,15 @@ public class StationRepository {
     }
 
     public boolean removeStation(int id) {
-        for (Station s : stationList) {
-            if (s.getId() == id) {
-                stationList.remove(s);
-                return true;
-            }
-        }
-        return false;
+        return stationList.removeIf(s -> s.getId() == id);
     }
 
     public boolean updateStation(Station station) {
-        if (station == null)
-            return false;
-
-        for (Station s : stationList) {
-            if (s.getId() == station.getId()) {
-                stationList.remove(s);
-                stationList.add(station);
-                return true;
-            }
+        if (station == null) return false;
+        boolean removed = stationList.removeIf(s -> s.getId() == station.getId());
+        if (removed) {
+            stationList.add(station);
+            return true;
         }
         return false;
     }

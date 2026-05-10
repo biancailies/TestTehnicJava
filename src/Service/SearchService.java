@@ -17,8 +17,9 @@ public class SearchService {
         this.trainRepository = trainRepository;
     }
 
-    public void searchRoutes(Station from, Station to) {
-        System.out.println("Searching routes from " + from.getName() + " to " + to.getName() + "...");
+    public String searchRoutes(Station from, Station to) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Searching routes from ").append(from.getName()).append(" to ").append(to.getName()).append("...\n");
         boolean found = false;
 
         List<Train> allTrains = trainRepository.getAllTrains();
@@ -28,7 +29,7 @@ public class SearchService {
             if (isDirectRoute(train, from, to)) {
                 LocalTime dep = train.getStationTimes().get(from);
                 LocalTime arr = train.getStationTimes().get(to);
-                System.out.println("-> Direct Train: " + train.getName() + " | Departs: " + dep + " | Arrives: " + arr);
+                sb.append("-> Direct Train: ").append(train.getName()).append(" | Departs: ").append(dep).append(" | Arrives: ").append(arr).append("\n");
                 found = true;
             }
         }
@@ -49,9 +50,9 @@ public class SearchService {
 
                         // Allow at least 5 mins for changeover
                         if (arrMid.plusMinutes(5).isBefore(depMid) || arrMid.plusMinutes(5).equals(depMid)) {
-                            System.out.println("-> Changeover at " + mid.getName() + ":");
-                            System.out.println("   Train 1: " + train1.getName() + " | Departs " + from.getName() + ": " + train1.getStationTimes().get(from) + " | Arrives " + mid.getName() + ": " + arrMid);
-                            System.out.println("   Train 2: " + train2.getName() + " | Departs " + mid.getName() + ": " + depMid + " | Arrives " + to.getName() + ": " + train2.getStationTimes().get(to));
+                            sb.append("-> Changeover at ").append(mid.getName()).append(":\n");
+                            sb.append("   Train 1: ").append(train1.getName()).append(" | Departs ").append(from.getName()).append(": ").append(train1.getStationTimes().get(from)).append(" | Arrives ").append(mid.getName()).append(": ").append(arrMid).append("\n");
+                            sb.append("   Train 2: ").append(train2.getName()).append(" | Departs ").append(mid.getName()).append(": ").append(depMid).append(" | Arrives ").append(to.getName()).append(": ").append(train2.getStationTimes().get(to)).append("\n");
                             found = true;
                         }
                     }
@@ -60,8 +61,9 @@ public class SearchService {
         }
 
         if (!found) {
-            System.out.println("Error: No possible link found between " + from.getName() + " and " + to.getName() + ".");
+            sb.append("Error: No possible link found between ").append(from.getName()).append(" and ").append(to.getName()).append(".\n");
         }
+        return sb.toString();
     }
 
     private boolean isDirectRoute(Train train, Station from, Station to) {

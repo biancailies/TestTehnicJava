@@ -5,35 +5,43 @@ import Model.Train;
 
 public class EmailService {
 
-    public void sendBookingConfirmation(Booking booking) {
+    public String sendBookingConfirmation(Booking booking) {
+        StringBuilder sb = new StringBuilder();
         String email = booking.getCustomer().getEmail();
-        System.out.println("--------------------------------------------------");
-        System.out.println("EMAIL TO: " + email);
-        System.out.println("SUBJECT: Booking Confirmation - Ticket #" + booking.getTicket().getId());
-        System.out.println("BODY: Dear " + booking.getCustomer().getName() + ",");
-        System.out.println("Your booking is confirmed.");
-        System.out.println("Train: " + booking.getTicket().getTrain().getName());
-        System.out.println("Route: " + booking.getTicket().getDepartureStation().getName()
-                + " -> " + booking.getTicket().getArrivalStation().getName());
-        System.out.println("Seat Number: " + booking.getTicket().getSeatNumber());
-        System.out.println("Price: $" + booking.getTicket().getPrice());
-        System.out.println("Booking Date: " + booking.getBookingDate().toLocalDate()
-                + " at " + booking.getBookingDate().toLocalTime().withNano(0));
-        System.out.println("Thank you for choosing us!");
-        System.out.println("--------------------------------------------------");
-        System.out.println("[NOTE: Email delivery is simulated via console output.]");
+        sb.append("--------------------------------------------------\n");
+        sb.append("EMAIL TO: ").append(email).append("\n");
+        sb.append("SUBJECT: Booking Confirmation - Booking #").append(booking.getId()).append("\n");
+        sb.append("BODY: Dear ").append(booking.getCustomer().getName()).append(",\n");
+        sb.append("Your booking is confirmed for ").append(booking.getTickets().size()).append(" ticket(s).\n");
+        
+        for (Model.Ticket t : booking.getTickets()) {
+            sb.append("\n  - Ticket #").append(t.getId())
+              .append(" | Train: ").append(t.getTrain().getName())
+              .append(" | Route: ").append(t.getDepartureStation().getName()).append(" -> ").append(t.getArrivalStation().getName())
+              .append(" | Seat: ").append(t.getSeatNumber())
+              .append(" | Price: $").append(t.getPrice()).append("\n");
+        }
+        
+        sb.append("\nBooking Date: ").append(booking.getBookingDate().toLocalDate())
+          .append(" at ").append(booking.getBookingDate().toLocalTime().withNano(0)).append("\n");
+        sb.append("Thank you for choosing us!\n");
+        sb.append("--------------------------------------------------\n");
+        sb.append("[NOTE: Email delivery is simulated via string output.]\n");
+        return sb.toString();
     }
 
-    public void sendDelayNotification(String email, String customerName, Train train, int delayMinutes) {
-        System.out.println("--------------------------------------------------");
-        System.out.println("EMAIL TO: " + email);
-        System.out.println("SUBJECT: Train Delay Notification - " + train.getName());
-        System.out.println("BODY: Dear " + customerName + ",");
-        System.out.println("We regret to inform you that train " + train.getName()
-                + " is delayed by " + delayMinutes + " minutes.");
-        System.out.println("We apologize for the inconvenience.");
-        System.out.println("--------------------------------------------------");
-        System.out.println("[NOTE: Email delivery is simulated via console output.]");
+    public String sendDelayNotification(String email, String customerName, Train train, int delayMinutes) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("--------------------------------------------------\n");
+        sb.append("EMAIL TO: ").append(email).append("\n");
+        sb.append("SUBJECT: Train Delay Notification - ").append(train.getName()).append("\n");
+        sb.append("BODY: Dear ").append(customerName).append(",\n");
+        sb.append("We regret to inform you that train ").append(train.getName())
+          .append(" is delayed by ").append(delayMinutes).append(" minutes.\n");
+        sb.append("We apologize for the inconvenience.\n");
+        sb.append("--------------------------------------------------\n");
+        sb.append("[NOTE: Email delivery is simulated via string output.]\n");
+        return sb.toString();
     }
 }
 

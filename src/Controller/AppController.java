@@ -50,9 +50,9 @@ public class AppController {
         adminService.addStation(s6);
 
         s6.setName("Sinaia Centrala");
-        adminService.updateStation(s6);
-        adminService.removeStation(6);
-        adminService.removeStation(99);
+        System.out.println(adminService.updateStation(s6));
+        System.out.println(adminService.removeStation(6));
+        System.out.println(adminService.removeStation(99));
         System.out.println();
 
         System.out.println("=== [SECTION 2] Admin: Route Management ===");
@@ -66,13 +66,13 @@ public class AppController {
         adminService.addRoute(r3);
 
         r3.setName("Route 3: Sibiu-Cluj (renamed)");
-        adminService.updateRoute(r3);
-        adminService.removeRoute(3);
+        System.out.println(adminService.updateRoute(r3));
+        System.out.println(adminService.removeRoute(3));
 
         Station sSinaia = new Station(7, "Sinaia", "Sinaia");
-        adminService.addStation(sSinaia);
-        adminService.addStationToRoute(r1, sSinaia);
-        adminService.removeStationFromRoute(r1, sSinaia);
+        System.out.println(adminService.addStation(sSinaia));
+        System.out.println(adminService.addStationToRoute(r1, sSinaia));
+        System.out.println(adminService.removeStationFromRoute(r1, sSinaia));
 
         System.out.println("Route 1 stations after modifications: " +
                 r1.getStations().stream().map(Station::getName).reduce((a, b) -> a + " -> " + b).orElse("(empty)"));
@@ -100,18 +100,18 @@ public class AppController {
 
         t3.setName("IR 9999 (Charter)");
         t3.setTotalSeats(60);
-        adminService.updateTrain(t3);
-        adminService.removeTrain(3);
-        adminService.removeTrain(99);
+        System.out.println(adminService.updateTrain(t3));
+        System.out.println(adminService.removeTrain(3));
+        System.out.println(adminService.removeTrain(99));
         System.out.println();
 
         System.out.println("=== [SECTION 4] Route Search ===");
 
-        searchService.searchRoutes(s1, s2);
+        System.out.print(searchService.searchRoutes(s1, s2));
         System.out.println();
-        searchService.searchRoutes(s1, s5);
+        System.out.print(searchService.searchRoutes(s1, s5));
         System.out.println();
-        searchService.searchRoutes(s5, s1);
+        System.out.print(searchService.searchRoutes(s5, s1));
         System.out.println();
 
         System.out.println("=== [SECTION 5] Ticket Booking ===");
@@ -119,10 +119,10 @@ public class AppController {
         Customer c1 = new Customer(1, "John Doe", "john.doe@example.com");
         Customer c2 = new Customer(2, "Jane Smith", "jane.smith@example.com");
 
-        bookingService.bookTickets(t2, s3, s5, 2, c1, 45.0);
+        System.out.print(bookingService.bookTickets(t2, s3, s5, 2, c1, 45.0));
         System.out.println();
 
-        bookingService.bookTickets(t1, s1, s3, 3, c2, 25.0);
+        System.out.print(bookingService.bookTickets(t1, s1, s3, 3, c2, 25.0));
         System.out.println();
 
         System.out.println("=== [SECTION 6] Admin: View Bookings ===");
@@ -130,18 +130,19 @@ public class AppController {
         List<Booking> t2Bookings = adminService.getBookingsForTrain(t2);
         System.out.println("Bookings for Train " + t2.getName() + ":");
         for (Booking b : t2Bookings) {
-            System.out.println("  - Ticket ID: " + b.getTicket().getId()
-                    + " | Seat: " + b.getTicket().getSeatNumber()
-                    + " | Customer: " + b.getCustomer().getName()
-                    + " | Email: " + b.getCustomer().getEmail()
-                    + " | Route: " + b.getTicket().getDepartureStation().getName()
-                    + " -> " + b.getTicket().getArrivalStation().getName());
+            System.out.println("  Booking ID: " + b.getId() + " | Customer: " + b.getCustomer().getName() + " | Email: " + b.getCustomer().getEmail());
+            for (Model.Ticket tk : b.getTickets()) {
+                System.out.println("    - Ticket ID: " + tk.getId()
+                        + " | Seat: " + tk.getSeatNumber()
+                        + " | Route: " + tk.getDepartureStation().getName()
+                        + " -> " + tk.getArrivalStation().getName());
+            }
         }
         System.out.println();
 
         System.out.println("=== [SECTION 7] Admin: Report Train Delay ===");
-        adminService.delayTrain(t2, 15);
+        System.out.print(adminService.delayTrain(t2, 15));
         System.out.println();
-        adminService.delayTrain(t1, 10);
+        System.out.print(adminService.delayTrain(t1, 10));
     }
 }

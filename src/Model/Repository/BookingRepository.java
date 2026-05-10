@@ -24,14 +24,8 @@ public class BookingRepository {
         return true;
     }
 
-    public boolean removeBooking(int id){
-        for(Booking b : bookingList) {
-            if (b.getId() == id){
-                bookingList.remove(b);
-                return true;
-            }
-        }
-        return false;
+    public boolean removeBooking(int id) {
+        return bookingList.removeIf(b -> b.getId() == id);
     }
 
     public Booking findById(int id){
@@ -48,11 +42,12 @@ public class BookingRepository {
     }
 
     public List<Booking> getBookingsForTrain(Train train) {
-        if(train == null) return new ArrayList<>();
+        if (train == null) return new ArrayList<>();
         return bookingList.stream()
-                .filter(b -> b.getTicket() != null && 
-                             b.getTicket().getTrain() != null && 
-                             b.getTicket().getTrain().getId() == train.getId())
+                .filter(b -> b.getTickets() != null && 
+                             !b.getTickets().isEmpty() && 
+                             b.getTickets().get(0).getTrain() != null && 
+                             b.getTickets().get(0).getTrain().getId() == train.getId())
                 .collect(Collectors.toList());
     }
 
