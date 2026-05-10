@@ -28,6 +28,18 @@ public class BookingService {
 
     public String bookTickets(Train train, Station departure, Station arrival, int count, 
                                Customer customer, Double pricePerTicket) {
+        if (departure == null || arrival == null) {
+            return "Error: Departure and arrival stations cannot be null.\n";
+        }
+
+        if (pricePerTicket == null || pricePerTicket < 0) {
+            return "Error: Invalid ticket price.\n";
+        }
+
+        if (train.getRoute() == null || train.getStationTimes() == null) {
+            return "Error: Train route or schedule is invalid.\n";
+        }
+
         if (train == null || count <= 0 || customer == null) {
             return "Error: Invalid parameters for booking.\n";
         }

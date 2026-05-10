@@ -4,62 +4,65 @@ import Model.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RouteRepository {
 
-    private List<Route> routeList = new ArrayList<>();
+    private final List<Route> routeList = new ArrayList<>();
 
-    public boolean addRoute(Route route){
-        if(route == null)
+    public boolean addRoute(Route route) {
+        if (route == null || existsById(route.getId())) {
             return false;
-
-        for(Route r : routeList) {
-            if (r.getId() == route.getId())
-                return false;
         }
 
         routeList.add(route);
         return true;
-
     }
 
     public boolean removeRoute(int id) {
-        return routeList.removeIf(r -> r.getId() == id);
+        return routeList.removeIf(route -> route.getId() == id);
     }
 
     public boolean updateRoute(Route route) {
-        if (route == null) return false;
-        boolean removed = routeList.removeIf(r -> r.getId() == route.getId());
-        if (removed) {
-            routeList.add(route);
-            return true;
+        if (route == null) {
+            return false;
         }
+
+        for (int i = 0; i < routeList.size(); i++) {
+            if (routeList.get(i).getId() == route.getId()) {
+                routeList.set(i, route);
+                return true;
+            }
+        }
+
         return false;
     }
 
-    public Route findById(int id){
-
-        for(Route r : routeList){
-            if(r.getId() == id){
-                return r;
+    public Route findById(int id) {
+        for (Route route : routeList) {
+            if (route.getId() == id) {
+                return route;
             }
         }
 
         return null;
     }
 
-    public Route findByName(String name){
-        for(Route r : routeList){
-            if(r.getName().equals(name)){
-                return r;
+    public Route findByName(String name) {
+        for (Route route : routeList) {
+            if (Objects.equals(route.getName(), name)) {
+                return route;
             }
         }
 
         return null;
     }
 
-    public List<Route> getAllRoutes(){
-        return routeList;
+    public boolean existsById(int id) {
+        return findById(id) != null;
     }
 
+    public List<Route> getAllRoutes() {
+        return new ArrayList<>(routeList);
+    }
 }

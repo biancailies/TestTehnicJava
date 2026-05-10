@@ -4,18 +4,15 @@ import Model.Station;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class StationRepository {
 
-    private List<Station> stationList = new ArrayList<>();
+    private final List<Station> stationList = new ArrayList<>();
 
     public boolean addStation(Station station) {
-        if (station == null)
+        if (station == null || existsById(station.getId())) {
             return false;
-
-        for (Station s : stationList) {
-            if (s.getId() == station.getId())
-                return false;
         }
 
         stationList.add(station);
@@ -23,36 +20,49 @@ public class StationRepository {
     }
 
     public boolean removeStation(int id) {
-        return stationList.removeIf(s -> s.getId() == id);
+        return stationList.removeIf(station -> station.getId() == id);
     }
 
     public boolean updateStation(Station station) {
-        if (station == null) return false;
-        boolean removed = stationList.removeIf(s -> s.getId() == station.getId());
-        if (removed) {
-            stationList.add(station);
-            return true;
+        if (station == null) {
+            return false;
         }
+
+        for (int i = 0; i < stationList.size(); i++) {
+            if (stationList.get(i).getId() == station.getId()) {
+                stationList.set(i, station);
+                return true;
+            }
+        }
+
         return false;
     }
 
     public Station findById(int id) {
-        for (Station s : stationList) {
-            if (s.getId() == id)
-                return s;
+        for (Station station : stationList) {
+            if (station.getId() == id) {
+                return station;
+            }
         }
+
         return null;
     }
 
     public Station findByName(String name) {
-        for (Station s : stationList) {
-            if (s.getName().equals(name))
-                return s;
+        for (Station station : stationList) {
+            if (Objects.equals(station.getName(), name)) {
+                return station;
+            }
         }
+
         return null;
     }
 
+    public boolean existsById(int id) {
+        return findById(id) != null;
+    }
+
     public List<Station> getAllStations() {
-        return stationList;
+        return new ArrayList<>(stationList);
     }
 }

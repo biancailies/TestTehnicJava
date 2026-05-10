@@ -32,8 +32,21 @@ public class AdminService {
     // --- Station Management ---
 
     public String addStation(Station station) {
+        if (station == null) {
+            return "[ADMIN] addStation: FAILED (station is null)";
+        }
+
+        if (station.getName() == null || station.getName().isBlank()) {
+            return "[ADMIN] addStation: FAILED (station name is empty)";
+        }
+
+        if (station.getCity() == null || station.getCity().isBlank()) {
+            return "[ADMIN] addStation: FAILED (station city is empty)";
+        }
+
         boolean result = stationRepository.addStation(station);
-        return "[ADMIN] addStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
+        return "[ADMIN] addStation('" + station.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
     public String removeStation(int id) {
@@ -42,15 +55,41 @@ public class AdminService {
     }
 
     public String updateStation(Station station) {
+        if (station == null) {
+            return "[ADMIN] updateStation: FAILED (station is null)";
+        }
+
+        if (station.getName() == null || station.getName().isBlank()) {
+            return "[ADMIN] updateStation: FAILED (station name is empty)";
+        }
+
+        if (station.getCity() == null || station.getCity().isBlank()) {
+            return "[ADMIN] updateStation: FAILED (station city is empty)";
+        }
+
         boolean result = stationRepository.updateStation(station);
-        return "[ADMIN] updateStation('" + station.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
+        return "[ADMIN] updateStation('" + station.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (not found)");
     }
 
     // --- Route Management ---
 
     public String addRoute(Route route) {
+        if (route == null) {
+            return "[ADMIN] addRoute: FAILED (route is null)";
+        }
+
+        if (route.getName() == null || route.getName().isBlank()) {
+            return "[ADMIN] addRoute: FAILED (route name is empty)";
+        }
+
+        if (route.getStations() == null || route.getStations().size() < 2) {
+            return "[ADMIN] addRoute: FAILED (route must contain at least two stations)";
+        }
+
         boolean result = routeRepository.addRoute(route);
-        return "[ADMIN] addRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
+        return "[ADMIN] addRoute('" + route.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
     public String removeRoute(int id) {
@@ -59,8 +98,21 @@ public class AdminService {
     }
 
     public String updateRoute(Route route) {
+        if (route == null) {
+            return "[ADMIN] updateRoute: FAILED (route is null)";
+        }
+
+        if (route.getName() == null || route.getName().isBlank()) {
+            return "[ADMIN] updateRoute: FAILED (route name is empty)";
+        }
+
+        if (route.getStations() == null || route.getStations().size() < 2) {
+            return "[ADMIN] updateRoute: FAILED (route must contain at least two stations)";
+        }
+
         boolean result = routeRepository.updateRoute(route);
-        return "[ADMIN] updateRoute('" + route.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
+        return "[ADMIN] updateRoute('" + route.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (not found)");
     }
 
     public String addStationToRoute(Route route, Station station) {
@@ -86,8 +138,41 @@ public class AdminService {
     // --- Train Management ---
 
     public String addTrain(Train train) {
+        if (train == null) {
+            return "[ADMIN] addTrain: FAILED (train is null)";
+        }
+
+        if (train.getName() == null || train.getName().isBlank()) {
+            return "[ADMIN] addTrain: FAILED (train name is empty)";
+        }
+
+        if (train.getRoute() == null) {
+            return "[ADMIN] addTrain: FAILED (train route is null)";
+        }
+
+        if (train.getStationTimes() == null || train.getStationTimes().isEmpty()) {
+            return "[ADMIN] addTrain: FAILED (train schedule is empty)";
+        }
+
+        if (train.getTotalSeats() <= 0) {
+            return "[ADMIN] addTrain: FAILED (total seats must be greater than 0)";
+        }
+
+        if (train.getBookedSeats() < 0) {
+            return "[ADMIN] addTrain: FAILED (booked seats cannot be negative)";
+        }
+
+        if (train.getBookedSeats() > train.getTotalSeats()) {
+            return "[ADMIN] addTrain: FAILED (booked seats cannot exceed total seats)";
+        }
+
+        if (train.getDelayMinutes() < 0) {
+            return "[ADMIN] addTrain: FAILED (delay minutes cannot be negative)";
+        }
+
         boolean result = trainRepository.addTrain(train);
-        return "[ADMIN] addTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (duplicate ID)");
+        return "[ADMIN] addTrain('" + train.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (duplicate ID)");
     }
 
     public String removeTrain(int id) {
@@ -96,8 +181,41 @@ public class AdminService {
     }
 
     public String updateTrain(Train train) {
+        if (train == null) {
+            return "[ADMIN] updateTrain: FAILED (train is null)";
+        }
+
+        if (train.getName() == null || train.getName().isBlank()) {
+            return "[ADMIN] updateTrain: FAILED (train name is empty)";
+        }
+
+        if (train.getRoute() == null) {
+            return "[ADMIN] updateTrain: FAILED (train route is null)";
+        }
+
+        if (train.getStationTimes() == null || train.getStationTimes().isEmpty()) {
+            return "[ADMIN] updateTrain: FAILED (train schedule is empty)";
+        }
+
+        if (train.getTotalSeats() <= 0) {
+            return "[ADMIN] updateTrain: FAILED (total seats must be greater than 0)";
+        }
+
+        if (train.getBookedSeats() < 0) {
+            return "[ADMIN] updateTrain: FAILED (booked seats cannot be negative)";
+        }
+
+        if (train.getBookedSeats() > train.getTotalSeats()) {
+            return "[ADMIN] updateTrain: FAILED (booked seats cannot exceed total seats)";
+        }
+
+        if (train.getDelayMinutes() < 0) {
+            return "[ADMIN] updateTrain: FAILED (delay minutes cannot be negative)";
+        }
+
         boolean result = trainRepository.updateTrain(train);
-        return "[ADMIN] updateTrain('" + train.getName() + "'): " + (result ? "SUCCESS" : "FAILED (not found)");
+        return "[ADMIN] updateTrain('" + train.getName() + "'): " +
+                (result ? "SUCCESS" : "FAILED (not found)");
     }
 
     // --- Booking & Delays ---
