@@ -283,3 +283,13 @@ Arrival: 15:30
 Total duration: 7h 30m
 Changes: 1
 Estimated price: $80.0
+```
+
+## Automated Tests
+
+The project includes JUnit tests for the main business logic:
+- booking and overbooking prevention
+- direct route search
+- smart route optimization
+
+Tests can be run directly from IntelliJ using JUnit 5.
