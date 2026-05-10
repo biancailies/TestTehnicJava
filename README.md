@@ -28,31 +28,65 @@ The application follows an MVC-like, layered architecture to separate concerns w
 
 ## Setup & Execution
 
-1. Navigate to the `src` directory.
-2. Compile:
-   ```bash
-   javac Main.java
-   ```
-3. Run:
-   ```bash
-   java Main
-   ```
+The application starts with an interactive console menu. At startup, predefined demo data is loaded automatically, so the user can immediately test route searching, ticket booking, admin operations, delays, and route optimization.
 
+### Compile and run
+
+Navigate to the `src` directory and compile all source files:
+
+```bash
+javac Main.java Controller/*.java Service/*.java Model/*.java Model/Repository/*.java
+```
+
+Then run:
+
+```bash
+java Main
+```
+
+### Main menu
+
+```text
+===== TRAIN TICKETING APPLICATION =====
+1. Customer Menu
+2. Admin Menu
+0. Exit
+```
+
+### Customer operations
+
+```text
+1. Search routes
+2. Book tickets
+3. Show optimized routes
+0. Back
+```
+
+### Administrator operations
+
+```text
+1. Station management
+2. Route management
+3. Train management
+4. View bookings for a train
+5. Report train delay
+0. Back
+```
 ---
 
 ## Features & I/O Examples
 
-The demo in `Main.java` is split into **7 sections**, each demonstrating a different feature.
+The examples below show representative input and output for each supported functionality. They match the behavior available through the interactive console menus.
 
 ---
 
-### Section 1 — Admin: Station Management
+### Admin: Station Management
 
 Administrators can **add**, **update**, and **remove** stations. Failed operations (e.g., duplicate ID or not found) print a descriptive error.
 
 **Example Output:**
 ```
-=== [SECTION 1] Admin: Station Management ===
+=== Admin: Station Management ===
 [ADMIN] addStation('Bucuresti Nord'): SUCCESS
 [ADMIN] addStation('Sinaia'): SUCCESS
 [ADMIN] updateStation('Sinaia Centrala'): SUCCESS
@@ -62,13 +96,13 @@ Administrators can **add**, **update**, and **remove** stations. Failed operatio
 
 ---
 
-### Section 2 — Admin: Route Management
+### Admin: Route Management
 
 Administrators can **add**, **update**, and **remove** routes. They can also **add** or **remove individual stations** from an existing route.
 
 **Example Output:**
 ```
-=== [SECTION 2] Admin: Route Management ===
+=== Admin: Route Management ===
 [ADMIN] addRoute('Route 1: Buc-Brasov'): SUCCESS
 [ADMIN] addRoute('Route 3: Temporary'): SUCCESS
 [ADMIN] updateRoute('Route 3: Sibiu-Cluj (renamed)'): SUCCESS
@@ -80,13 +114,13 @@ Route 1 stations after modifications: Bucuresti Nord -> Ploiesti -> Brasov
 
 ---
 
-### Section 3 — Admin: Train Management
+### Admin: Train Management
 
 Administrators can **add**, **update** (rename, change seats, etc.), and **remove** trains.
 
 **Example Output:**
 ```
-=== [SECTION 3] Admin: Train Management ===
+=== Admin: Train Management ===
 [ADMIN] addTrain('IR 1001'): SUCCESS
 [ADMIN] addTrain('IR 9999 (Temporary)'): SUCCESS
 [ADMIN] updateTrain('IR 9999 (Charter)'): SUCCESS
@@ -96,7 +130,7 @@ Administrators can **add**, **update** (rename, change seats, etc.), and **remov
 
 ---
 
-### Section 4 — Route Search
+### Route Search
 
 Customers can search for travel options between two stations. The system finds:
 - **Direct trains** (same train, departure station before arrival station).
@@ -126,7 +160,7 @@ Error: No possible link found between Cluj and Bucuresti Nord.
 
 ---
 
-### Section 5 — Ticket Booking & Overbooking Prevention
+### Ticket Booking & Overbooking Prevention
 
 Customers can book **one or multiple** tickets in a single call. The system checks available seats before confirming. A confirmation email is sent per ticket.
 
@@ -159,7 +193,7 @@ Error: Overbooking prevented. Train IR 1001 does not have enough seats.
 
 ---
 
-### Section 6 — Admin: View Bookings
+### Admin: View Bookings
 
 Administrators can retrieve all bookings made for a specific train, including full ticket and customer details.
 
@@ -170,7 +204,7 @@ List<Booking> bookings = adminService.getBookingsForTrain(t2);
 
 **Example Output:**
 ```
-=== [SECTION 6] Admin: View Bookings ===
+=== Admin: View Bookings ===
 Bookings for Train IR 1002:
   - Ticket ID: 1 | Seat: 1 | Customer: John Doe | Email: john.doe@example.com | Route: Brasov -> Cluj
   - Ticket ID: 2 | Seat: 2 | Customer: John Doe | Email: john.doe@example.com | Route: Brasov -> Cluj
@@ -178,7 +212,7 @@ Bookings for Train IR 1002:
 
 ---
 
-### Section 7 — Admin: Report Train Delay
+### Admin: Report Train Delay
 
 Administrators can log a delay on any train. All customers who have a booking on that train are automatically notified via email. If no customers are booked, an appropriate message is shown.
 
@@ -190,7 +224,7 @@ adminService.delayTrain(t1, 10);  // IR 1001 is 10 minutes late — no customers
 
 **Example Output:**
 ```
-=== [SECTION 7] Admin: Report Train Delay ===
+=== Admin: Report Train Delay ===
 [ADMIN] Train 'IR 1002' is now delayed by 15 minute(s). Notifying customers...
 --------------------------------------------------
 EMAIL TO: john.doe@example.com
@@ -205,7 +239,7 @@ We apologize for the inconvenience.
 
 ---
 
-### Section 8 — Optional Problem 2: Smart Route Optimizer
+### Optional Problem 2: Smart Route Optimizer
 
 ### Problem Definition
 
@@ -261,7 +295,7 @@ Routes are sorted by:
 ### Example Output
 
 ```text
-=== [SECTION 8] Optional Problem 2: Smart Route Optimizer ===
+=== Optional Problem 2: Smart Route Optimizer ===
 
 [OPTIMIZER] All route options from Bucuresti Nord to Cluj:
 
@@ -286,10 +320,22 @@ Estimated price: $80.0
 ```
 
 ## Automated Tests
+```bash
+mvn test
+```
 
-The project includes JUnit tests for the main business logic:
-- booking and overbooking prevention
+The project includes JUnit 5 tests for the main business logic:
+
+- booking tickets successfully
+- overbooking prevention
 - direct route search
+- route search with changeover
 - smart route optimization
 
-Tests can be run directly from IntelliJ using JUnit 5.
+The tests are located in the `src/tests` folder and can be run directly from IntelliJ using JUnit 5.
+The tests validate the most important business rules of the application, including booking validation, route searching, and route optimization behavior.
+## Limitations
+
+- The application uses in-memory repositories, so data is reset when the program stops.
+- Email sending is simulated through console output because no SMTP server is configured.
+- The optional route optimizer estimates ticket prices based on route duration and predefined logic.
